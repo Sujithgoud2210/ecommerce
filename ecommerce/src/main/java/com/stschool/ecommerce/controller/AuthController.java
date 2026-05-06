@@ -1,6 +1,10 @@
 package com.stschool.ecommerce.controller;
 
+import com.stschool.ecommerce.service.AuthService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.io.IOException;
 
 public class AuthController {
     private final AuthService authService;
