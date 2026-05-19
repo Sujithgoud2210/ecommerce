@@ -1,5 +1,12 @@
 package com.stschool.ecommerce.repository;
 
+import com.stschool.ecommerce.entity.Customer;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public class CustomerRepository {
 
@@ -47,8 +54,7 @@ public class CustomerRepository {
                     .gender(updatedCustomer.getGender())
                     .status(updatedCustomer.getStatus())
                     .membership(updatedCustomer.getMembership())
-                    .residentialAddress(updatedCustomer.getResidentialAddress())
-                    .shippingAddress(updatedCustomer.getShippingAddress())
+                    .addresses(updatedCustomer.getAddresses())
                     .lastLoggedIn(updatedCustomer.getLastLoggedIn())
                     .createdOn(c.getCreatedOn()) //preserve createdOn
                     .lastLoggedIn(c.getLastLoggedIn())

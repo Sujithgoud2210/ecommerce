@@ -1,22 +1,24 @@
 package com.stschool.ecommerce.controller;
 
+import com.stschool.ecommerce.entity.Customer;
+import com.stschool.ecommerce.service.CustomerService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/customers")
 public class CustomerController {
+
     private final CustomerService customerService;
 
-    public CustomerController(CustomerService customerService) throws IOException {
+    public CustomerController(CustomerService customerService)  {
         this.customerService = customerService;
     }
 
     @GetMapping("/{id}")
     //api/v1/customers/10
     public ResponseEntity<?> getCustomerById(@PathVariable int id)  {
-        try {
-            return ResponseEntity.ok(customerService.getById(id));
-        } catch (CustomerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        return ResponseEntity.ok(customerService.getById(id));
     }
 
     @GetMapping("/")
@@ -24,17 +26,19 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
-    public Customer getCustomerByEmail(String email) throws CustomerNotFoundException {
+    @GetMapping("/exists/{email}")
+    public Customer getCustomerByEmail(@PathVariable String email)  {
         return customerService.getByEmail(email);
     }
-
-    public Customer updateCustomer(Customer customer) throws Exception {
+    @PutMapping("/")
+    public Customer updateCustomer(@RequestBody Customer customer)  {
         return customerService.updateCustomer(customer);
     }
 
     @DeleteMapping("/")
     //api/v1/customers?id=1
-    public void deleteCustomer(@RequestParam("id") int id) throws Exception {
+    public ResponseEntity<?> deleteCustomer(@RequestParam("id") int id)  {
         customerService.deleteCustomer(id);
+        return ResponseEntity.ok().build();
     }
 }

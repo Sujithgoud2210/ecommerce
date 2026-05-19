@@ -1,6 +1,21 @@
 package com.stschool.ecommerce.service;
 
+import com.stschool.ecommerce.dto.ProductDto;
+import com.stschool.ecommerce.exception.ProductExistsException;
+import com.stschool.ecommerce.exception.ProductNotFoundException;
+import com.stschool.ecommerce.entity.Product;
+import com.stschool.ecommerce.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -11,14 +26,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product save(Product product) throws ProductExistsException {
+    public ProductDto save(Product product) throws ProductExistsException {
         //check whether product already exists or not based on id
-
-        productRepository.findById(product.getId())
+        log.info("{} -> Product id: {}", getClass().getName(), product.getId());
+        productRepository.findByName(product.getName())
                 .ifPresent(p -> {
-                    throw new ProductExistsException("Product already exists with id : " + product.getId());
+                    throw new ProductExistsException("Product already exists with name : " + product.getName());
                 });
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        return ProductDto.builder().id(savedProduct.getId()).name(savedProduct.getName()).isAvailable(savedProduct.isAvailable()).build();
     }
 
     @Override
@@ -34,13 +50,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product update(int id, Product product) throws ProductNotFoundException {
         productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product Not found with id: " + id));
-        return productRepository.update(id, product);
+        return productRepository.save(product);
     }
 
     @Override
     public void delete(int id) {
-        productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product Not found with id: " + id));
-        productRepository.delete(id);
+        productRepository.delete(productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product Not found with id: " + id)));
     }
 
     @Override
@@ -154,7 +169,7 @@ public class ProductServiceImpl implements ProductService {
 
     // 15
     @Override
-    public List<Product> getProductsAfterYear(int year) {
+    public List<Product> getProductsAfterManufacturedYear(int year) {
         return productRepository.findAll().stream()
                 .filter(p -> p.getManufacturedYear() > year)
                 .toList();
@@ -248,4 +263,11 @@ public class ProductServiceImpl implements ProductService {
                         )
                 ));
     }
+
+    @Override
+    public float getFinalProductPrice(Product product) {
+        return product.getMaxRetailPrice() - (product.getMaxRetailPrice() * product.getDiscountPercentage() / 100);
+    }
+
+
 }

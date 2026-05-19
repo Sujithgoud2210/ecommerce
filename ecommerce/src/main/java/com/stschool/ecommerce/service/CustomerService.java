@@ -1,5 +1,11 @@
 package com.stschool.ecommerce.service;
 
+import com.stschool.ecommerce.exception.CustomerExistsException;
+import com.stschool.ecommerce.exception.CustomerNotFoundException;
+import com.stschool.ecommerce.entity.Customer;
+
+import java.util.List;
+
 public interface CustomerService {
     // ✅ CREATE
     Customer register(Customer customer) throws CustomerExistsException;

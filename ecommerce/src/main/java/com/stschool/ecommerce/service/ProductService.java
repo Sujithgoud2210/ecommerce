@@ -1,12 +1,21 @@
 package com.stschool.ecommerce.service;
 
 
+import com.stschool.ecommerce.dto.ProductDto;
+import com.stschool.ecommerce.exception.ProductExistsException;
+import com.stschool.ecommerce.exception.ProductNotFoundException;
+import com.stschool.ecommerce.entity.Product;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public interface ProductService {
 
     /*
     CRUD
      */
-    Product save(Product product) throws ProductExistsException;
+    ProductDto save(Product product) throws ProductExistsException;
     Product getById(int id) throws ProductNotFoundException;
     List<Product> getAll();
     Product update(int id, Product product) throws ProductNotFoundException;
@@ -49,7 +58,7 @@ public interface ProductService {
 
     double getTotalDiscountedValue();
 
-    List<Product> getProductsAfterYear(int year);
+    List<Product> getProductsAfterManufacturedYear(int year);
 
     List<Product> getAvailableProductsAbovePrice(double price);
 
@@ -70,5 +79,7 @@ public interface ProductService {
     Map<String, Double> getAveragePriceByCategory();
 
     Map<String, List<Product>> getTop3ProductsByCategory();
+
+    float getFinalProductPrice(Product product);
 
 }

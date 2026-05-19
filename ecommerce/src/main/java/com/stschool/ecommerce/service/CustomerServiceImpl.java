@@ -1,5 +1,17 @@
 package com.stschool.ecommerce.service;
 
+import com.stschool.ecommerce.enums.Membership;
+import com.stschool.ecommerce.enums.Status;
+import com.stschool.ecommerce.exception.CustomerExistsException;
+import com.stschool.ecommerce.exception.CustomerNotFoundException;
+import com.stschool.ecommerce.entity.Customer;
+import com.stschool.ecommerce.repository.CustomerRepository;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class CustomerServiceImpl implements CustomerService{
 
@@ -70,6 +82,7 @@ public class CustomerServiceImpl implements CustomerService{
                 .orElseThrow(() ->
                         new CustomerNotFoundException("Customer not found with email: " + email));
     }
+
 
     // ✅ UPDATE
     @Override
